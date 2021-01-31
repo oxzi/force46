@@ -17,14 +17,14 @@ int getaddrinfo(const char *node, const char *service,
   hints_copy->ai_family = AF_INET_WANT;
 
   // The assignment of _getaddrinfo may look nuts, but satisfies the C
-  // standard. The more straight forward way of `getaddrinfo = dlsym(RTLD_NEXT,
+  // standard. The more straight forward way of `_getaddrinfo = dlsym(RTLD_NEXT,
   // "getaddrinfo");` would assign a void pointer to a function pointer, which
   // is forbidden.
 
   int (*_getaddrinfo)(const char *, const char *, const struct addrinfo *,
                       struct addrinfo **);
   *(void **)(&_getaddrinfo) = dlsym(RTLD_NEXT, "getaddrinfo");
-  return _getaddrinfo(node, service, hints, res);
+  return _getaddrinfo(node, service, hints_copy, res);
 }
 
 int socket(int domain, int type, int protocol) {
